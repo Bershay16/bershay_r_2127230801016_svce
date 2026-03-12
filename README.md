@@ -16,7 +16,7 @@ pip install -r requirements.txt
 ```bash
 .venv/bin/python3 -m uvicorn main:app --reload
 ```
-#### Normal command `uvicorn main:app --reload` may cause an error so use the above one
+
 ## Endpoints
 
 ```
