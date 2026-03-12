@@ -1,7 +1,28 @@
-# START
-1. ORM is used, 
-    1. so database is created 
-    2. tables are created
-    3. values are inserted
-    4. indexed automatically
-### All the above happens automaticaly
+# NVD CPE API
+
+## How to run
+
+1. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+2. Load the data into the database
+```bash
+.venv/bin/python3 -m app.ingest
+```
+
+3. Start the server
+```bash
+.venv/bin/python3 -m uvicorn main:app --reload
+```
+
+## Endpoints
+
+```
+GET /api/cpes?page=1&limit=10
+GET /api/cpes/search?cpe_title=apache
+GET /api/cpes/search?deprecation_date=2024-01-01
+```
+
+Try it at `http://localhost:8000/docs`
