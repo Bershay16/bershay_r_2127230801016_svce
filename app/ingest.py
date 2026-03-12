@@ -10,8 +10,6 @@ _SCRIPT_DIR = Path(__file__).resolve().parent.parent
 CHUNKS_DIR = _SCRIPT_DIR / "nvdcpe-2.0" / "nvdcpe-2.0-chunks"
 
 BATCH_SIZE = 500
-
-
 def _parse_date(value: Optional[str]) -> Optional[date]:
     if not value:
         return None

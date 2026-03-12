@@ -1,6 +1,6 @@
 from datetime import date
 from typing import Optional
-
+from typing import Optional
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,7 +10,6 @@ from app.models import CPE
 from app.schemas import CPEListResponse, CPEOut, CPESearchResponse
 
 router = APIRouter(prefix="/api/cpes", tags=["CPEs"])
-
 
 @router.get("", response_model=CPEListResponse)
 async def list_cpes(
@@ -34,7 +33,6 @@ async def list_cpes(
         total=total,
         data=[CPEOut.model_validate(c) for c in cpes],
     )
-
 
 @router.get("/search", response_model=CPESearchResponse)
 async def search_cpes(
@@ -67,5 +65,4 @@ async def search_cpes(
 
     result = await db.execute(stmt)
     cpes = result.scalars().all()
-
     return CPESearchResponse(data=[CPEOut.model_validate(c) for c in cpes])
