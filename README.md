@@ -16,13 +16,10 @@ pip install -r requirements.txt
 ```bash
 .venv/bin/python3 -m uvicorn main:app --reload
 ```
-
+#### Normal command `uvicorn main:app --reload` may cause an error so use the above one
 ## Endpoints
 
 ```
 GET /api/cpes?page=1&limit=10
 GET /api/cpes/search?cpe_title=apache
-GET /api/cpes/search?deprecation_date=2024-01-01
 ```
-
-Try it at `http://localhost:8000/docs`
