@@ -1,7 +1,5 @@
 import asyncio
 import json
-import os
-import re
 from datetime import datetime, date
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -9,43 +7,23 @@ from typing import Any, Dict, List, Optional
 from sqlalchemy import insert
 
 _SCRIPT_DIR = Path(__file__).resolve().parent.parent
-CHUNKS_DIR: Path = Path(_SCRIPT_DIR / "nvdcpe-2.0" / "nvdcpe-2.0-chunks")
+CHUNKS_DIR = _SCRIPT_DIR / "nvdcpe-2.0" / "nvdcpe-2.0-chunks"
 
 BATCH_SIZE = 500
 
-_CPE23_RE = re.compile(r"^cpe:2\.3:([^:]+):([^:]+):([^:]+):([^:]+):.*$")
 
-
-def cpe23_to_cpe22(cpe23: str) -> Optional[str]:
-    """cpe:2.3:a:vendor:product:1.0:... → cpe:/a:vendor:product:1.0"""
-    m = _CPE23_RE.match(cpe23)
-    if not m:
-        return None
-    part, vendor, product, version = m.groups()
-    parts_22 = [p for p in [part, vendor, product, version] if p and p != "*"]
-    return "cpe:/" + ":".join(parts_22)
-
-
-def _parse_dt(value: Optional[str]) -> Optional[datetime]:
+def _parse_date(value: Optional[str]) -> Optional[date]:
     if not value:
         return None
     for fmt in ("%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%dT%H:%M:%S"):
         try:
-            return datetime.strptime(value[:26], fmt)
+            return datetime.strptime(value[:26], fmt).date()
         except ValueError:
             continue
     return None
 
 
-def _parse_date(value: Optional[str]) -> Optional[date]:
-    dt = _parse_dt(value)
-    return dt.date() if dt else None
-
-
 def _build_row(cpe_obj: Dict[str, Any]) -> Dict[str, Any]:
-    cpe23_uri: str = cpe_obj.get("cpeName", "")
-    cpe22_uri: Optional[str] = cpe23_to_cpe22(cpe23_uri)
-
     titles: list = cpe_obj.get("titles", [])
     title = None
     for t in titles:
@@ -63,8 +41,8 @@ def _build_row(cpe_obj: Dict[str, Any]) -> Dict[str, Any]:
 
     return {
         "cpe_title": title,
-        "cpe_22_uri": cpe22_uri,
-        "cpe_23_uri": cpe23_uri,
+        "cpe_22_uri": cpe_obj.get("cpe22Uri"),
+        "cpe_23_uri": cpe_obj.get("cpeName"),
         "reference_links": ref_links,
         "cpe_22_deprecation_date": dep_date,
         "cpe_23_deprecation_date": dep_date,
